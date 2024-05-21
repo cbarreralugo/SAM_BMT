@@ -3,10 +3,109 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SAM_BMT"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        xmlns:local="clr-namespace:SAM_BMT" 
+        mc:Ignorable="d" x:Name="home" 
+        Title="MainWindow" Height="720" Width="1100"
+        WindowStartupLocation="CenterScreen" WindowStyle="None"
+        Background="Transparent" AllowsTransparency="True"
+        ResizeMode="NoResize" WindowState="Normal" FontFamily="Poppins">
+
+
+    <Border CornerRadius="10" Background="{DynamicResource PrimaryWhiteColor}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Start: GridColumn Left -->
+            <Border CornerRadius="10 0 0 10"
+                    Padding="10"
+                    Background="{DynamicResource SecundaryBackgroundColor}">
+                <Grid x:Name="gridMenu">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="130"/>
+                        <RowDefinition Height="80"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Logo -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" >
+                        <Image Source="/logo.png" Stretch="Fill" Height="36" Width="36" VerticalAlignment="Center" Margin="10 0 0 0"/>
+                        <Label Content="SAM BMT" Foreground="{DynamicResource SecundaryTextColor}" FontWeight="Bold" FontSize="24" VerticalAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1">
+                        <RadioButton x:Name="rdHome" Content="Home" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource home}" Margin="0 30 0 0" Click="rdHome_Click"/>
+                        <RadioButton x:Name="rdAnalytics" Content="Apps publicadas" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource analytics}" Margin="0 1 0 1" Click="rdAnalytics_Click"/>
+                        <RadioButton x:Name="rdMessages" Visibility="Collapsed" Content="Messages" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource messages}" Click="rdMessages_Click"/>
+                        <RadioButton x:Name="rdCollections" Content="Publicar solucion" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource collections}" Margin="0 1 0 1" Click="rdCollections_Click"/>
+                        <RadioButton x:Name="rdUsers" Visibility="Collapsed" Content="Users" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource users}" Click="rdUsers_Click"/>
+
+                        <Separator Margin="20 20" Background="{DynamicResource TertiaryBackgroundColor}"/>
+
+                        <RadioButton x:Name="rdNotifications" Visibility="Collapsed" Content="Notifications" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource notifications}" Margin="0 1 0 1"/>
+                        <RadioButton x:Name="rdSettings" Visibility="Collapsed" Content="Settings" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource settings}"/>
+
+                    </StackPanel>
+
+                    <Border Grid.Row="2"
+                            Margin="20 0"
+                            Visibility="Collapsed"
+                            CornerRadius="15"
+                            Background="{DynamicResource SecundaryBlueColor}">
+                        <Border.BitmapEffect>
+                            <DropShadowBitmapEffect
+                                            ShadowDepth="1"
+                                            Direction="0"
+                                            Color="#5B8DEF"
+                                            Softness="0.8"/>
+                        </Border.BitmapEffect>
+                        <Grid Margin="20">
+                            <Label Content="Discover Pro" FontWeight="SemiBold" FontSize="18" Foreground="{DynamicResource TertiaryWhiteColor}" Margin="0 -12 0 0"/>
+                            <Label Content="Get Unlimited Statistics And Data" FontWeight="Regular" FontSize="10" Foreground="{DynamicResource PrimaryWhiteColor}" Margin="0 18 0 0"/>
+                            <Button Content="Upgrade" Style="{DynamicResource ProButtonStyle}" Margin="0 50 0 0"/>
+                        </Grid>
+                    </Border>
+
+                    <Path Grid.Row="3" Data="{DynamicResource information}" Fill="{DynamicResource TertiaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20 0 0 0"/>
+                    
+                </Grid>
+            </Border>
+            <!-- End: GridColumn Left -->
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <!-- Start: Button Close | Restore | Minimize -->
+                <StackPanel Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,10,0" Height="30" Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <Button x:Name="btnClose" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource close}" Click="btnClose_Click" Tag="IsCloseButton"/>
+                    <Button x:Name="btnRestore" Margin="5 0" Click="btnRestore_Click">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonsStyle}">
+                                <Setter Property="Content" Value="{DynamicResource maximize}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=home, Path=WindowState}" Value="Maximized">
+                                        <Setter Property="Content" Value="{DynamicResource restore}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="btnMinimize" Style="{DynamicResource IconButtonsStyle}" Content="{DynamicResource minimize}" Click="btnMinimize_Click"/>
+                </StackPanel>
+                <!-- End: Button Close | Restore | Minimize -->
+
+                <!-- Start: Frame Container -->
+                <Border Grid.Row="1" CornerRadius="0 0 5 0" Background="Transparent">
+                    <Frame x:Name="frameContent" NavigationUIVisibility="Hidden" Margin="10"/>
+                </Border>
+                <!-- End: Frame Container -->
+
+            </Grid>
+        </Grid>
+    </Border>
 </Window>
