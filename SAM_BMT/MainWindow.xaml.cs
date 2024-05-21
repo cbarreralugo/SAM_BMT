@@ -25,7 +25,12 @@ namespace SAM_BMT
         public MainWindow()
         {
             InitializeComponent();
-            frameContent.Navigate(new Collections());
+            ventanaDefault();
+        }
+
+        private void ventanaDefault()
+        {
+            rdCollections_Click(null,null);
         }
 
         private void Themes_Click(object sender, RoutedEventArgs e)
