@@ -68,7 +68,7 @@ namespace SAM_BMT
 
         private void rdMessages_Click(object sender, RoutedEventArgs e)
         {
-         //   frameContent.Navigate(new Messages());
+            frameContent.Navigate(new Default());
         }
 
         private void rdCollections_Click(object sender, RoutedEventArgs e)
@@ -78,7 +78,19 @@ namespace SAM_BMT
 
         private void rdUsers_Click(object sender, RoutedEventArgs e)
         {
-          //  frameContent.Navigate(new Users());
+            frameContent.Navigate(new Encryption());
+        }
+
+        private void rdNotifications_Click(object sender, RoutedEventArgs e)
+        {
+
+            frameContent.Navigate(new Default());
+        }
+
+        private void rdSettings_Click(object sender, RoutedEventArgs e)
+        {
+
+            frameContent.Navigate(new Default());
         }
     }
 }

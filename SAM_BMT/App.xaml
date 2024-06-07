@@ -9,7 +9,12 @@
                 <ResourceDictionary Source="/Vista/Themes/LigthTheme.xaml"/>
 
                 <ResourceDictionary Source="/Vista/Assets/Icons/Icons.xaml"/>
-                <ResourceDictionary Source="/Vista/Style/MainStyle.xaml"/> 
+                <ResourceDictionary Source="/Vista/Style/MainStyle.xaml"/>
+                <!--Material Design-->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Indigo.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Pink.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

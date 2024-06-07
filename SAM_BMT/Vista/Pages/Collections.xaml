@@ -5,14 +5,15 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:SAM_BMT.Vista.Pages"
       mc:Ignorable="d"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
       d:DesignHeight="550" d:DesignWidth="900"
       Title="Publicar" FontFamily="Poppins">
 
-    <Border CornerRadius="8" Background="White">
+    <Border CornerRadius="0" Background="White">
         <DockPanel Margin="10">
             <TabControl x:Name="tabControl" DockPanel.Dock="Top">
                 <!-- Tab para Examinar -->
-                <TabItem Header="Examinar">
+                <TabItem Header="Examinar proyecto">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -24,7 +25,7 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="150"/>
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Ruta de la Solución:" VerticalAlignment="Center" Margin="0,0,10,0"/>
@@ -39,22 +40,25 @@
 
                         <Button Grid.Row="3" Grid.Column="1" Content="Guardar Config" Click="BtnSaveConfig_Click" Margin="0,10,10,0"/>
 
-                        <Label Grid.Row="4" Grid.Column="0" Content="Servidor:" VerticalAlignment="Center" Margin="0,10,10,0"/>
-                        <ComboBox Grid.Row="4" SelectedIndex="0" Grid.Column="1" Name="cmbEnvironment" Margin="0,10,10,0">
-                            <ComboBoxItem Content="Desarrollo"/>
-                            <ComboBoxItem Content="Producción"/>
-                        </ComboBox>
-
-                        <Label Grid.Row="5" Grid.Column="0" Content="Tipo de Proyecto:" VerticalAlignment="Center" Margin="0,10,10,0"/>
-                        <ComboBox Grid.Row="5" Grid.Column="1" SelectedIndex="1" Name="cmbProjectType" Margin="0,10,10,0">
-                            <ComboBoxItem Content="Web"/>
-                            <ComboBoxItem Content="Escritorio"/>
-                        </ComboBox>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center">
+                            <Label Grid.Row="4"  Content="Servidor:" VerticalAlignment="Center" Margin="10,10,10,0"/>
+                            <TextBox x:Name="txt_ip_server" Width="200"  VerticalAlignment="Center" Text="\\180.176.163.136"/>
+                            <Label Grid.Row="4"  Content="Ambiente:" VerticalAlignment="Center" Margin="30,10,10,0"/>
+                            <ComboBox Grid.Row="4" SelectedIndex="0" Grid.Column="1" Name="cmbEnvironment" Margin="0,10,10,0">
+                                <ComboBoxItem Content="Desarrollo"/>
+                                <ComboBoxItem Content="Producción"/>
+                            </ComboBox>
+                            <Label Grid.Row="5" Grid.Column="0" Content="Tipo de Proyecto:" VerticalAlignment="Center" Margin="30,10,10,0"/>
+                            <ComboBox Grid.Row="5" Grid.Column="1" SelectedIndex="1" Name="cmbProjectType" Margin="0,10,10,0">
+                                <ComboBoxItem Content="Web"/>
+                                <ComboBoxItem Content="Escritorio"/>
+                            </ComboBox>
+                        </StackPanel> 
                     </Grid>
                 </TabItem>
 
                 <!-- Tab para Ambientación -->
-                <TabItem Header="Ambientación">
+                <TabItem Header="Ejecutar scrips SQL">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -65,15 +69,18 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Grid.Row="0" Grid.Column="0" Content="Examinar Scripts BD" Click="BtnSelectScripts_Click"   HorizontalAlignment="Left" Margin="0,10,10,0"/>
+                            <Button Grid.Row="0" Grid.Column="0" Content="Ejecutar todos los Scripts de BD" Click="btn_ExecuteSQL_Click" x:Name="btn_ExecuteSQL"  HorizontalAlignment="Left" Margin="0,10,10,0"/>
 
-                        <Button Grid.Row="0" Grid.Column="0" Content="Examinar Scripts BD" Click="BtnSelectScripts_Click" Margin="0,10,10,0"/>
+                        </StackPanel>
                         <DataGrid Grid.Row="1" Grid.ColumnSpan="2" Name="dgScripts" AutoGenerateColumns="False" Margin="0,10,0,10" SelectionChanged="DgScripts_SelectionChanged">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Nombre del Script" Binding="{Binding FileName}" Width="*"/>
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <TextBox Grid.Row="2" Grid.ColumnSpan="2" Name="txtScriptContent" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Margin="0,10,0,10" Height="100"/>
+                        <TextBox Grid.Row="2" Grid.ColumnSpan="2" Name="txtScriptContent" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Margin="0,10,0,10" Height="150"/>
                     </Grid>
                 </TabItem>
 
@@ -86,11 +93,14 @@
             </TabControl>
 
             <!-- Panel Inferior para Publicar -->
-            <StackPanel DockPanel.Dock="Bottom" Margin="10">
-                <Label Content="Ruta de Publicación:" VerticalAlignment="Center" Margin="0,10,10,0"/>
-                <TextBox Name="txtPublishPath" Text="C:\publicado" Margin="0,10,10,0"/>
-                <Button Content="Examinar" Click="BtnSelectPublishPath_Click" Margin="0,10,10,0"/>
-                <Button Content="Publicar App" Click="BtnPublish_Click" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+            <StackPanel DockPanel.Dock="Bottom" Margin="0">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Ruta de Publicación local:" VerticalAlignment="Center" Margin="0,10,10,0"/>
+                    <TextBox Name="txtPublishPath" Text="C:\publicado" Width="500" Margin="0,10,10,0"/>
+                    <Button Content="Examinar" Click="BtnSelectPublishPath_Click" Margin="0,10,10,0"/>
+                    <Button Content="Publicar App" Click="BtnPublish_Click" HorizontalAlignment="Center" Margin="0,10,10,0"/>
+
+                </StackPanel>
                 <ProgressBar Name="progressBar" Height="20" Margin="0,10,0,10"/>
                 <TextBlock Name="txtProgress" Margin="0,10,0,0" Foreground="Green" HorizontalAlignment="Center"/>
             </StackPanel>

@@ -4,12 +4,17 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:SAM_BMT.Vista.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
           mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Home" FontFamily="Poppins">
 
     <Border CornerRadius="8" Background="{DynamicResource SecundaryBackgroundColor}">
-        <Label Content="Home" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Grid>
+            <DataGrid x:Name="dg_appPublicadas" AutoGenerateColumns="True" >
+                
+            </DataGrid>
+        </Grid>
     </Border>
 </Page>
 

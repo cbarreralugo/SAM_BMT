@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
 using System;
+using SAM_BMT.Modelo;
+using SAM_BMT.Controlador;
 
 namespace SAM_BMT.Vista.Pages
 {
@@ -105,6 +107,7 @@ namespace SAM_BMT.Vista.Pages
 
         private async void BtnPublish_Click(object sender, RoutedEventArgs e)
         {
+            Publicacion_Modelo modelo = new Publicacion_Modelo();
             // Cambiar al tab de Consola
             tabControl.SelectedIndex = 2;
 
@@ -125,25 +128,27 @@ namespace SAM_BMT.Vista.Pages
 
             if (projectType == "Web")
             {
-                await PublishWebApp(projectPath, publishPath);
+                await PublishWebApp(projectPath, publishPath, modelo);
             }
             else if (projectType == "Escritorio")
             {
-                await PublishDesktopApp(projectPath, publishPath);
+                modelo.tipo_publicacion = 1;
+                modelo.tipo_app = 1;
+                await PublishDesktopApp(projectPath, publishPath, modelo);
             }
 
             AppendToConsole("Ejecutando scripts SQL...");
-            progressBar.Value = 80;
-            txtProgress.Text = "80% - Ejecutando scripts SQL";
-            ExecuteSqlScripts();
-
+            modelo.sql = false;
+            modelo.status = "Completada";
+            modelo.activo = true;
             progressBar.Value = 100;
             txtProgress.Text = "100% - Publicación completada";
             AppendToConsole("Publicación completada.");
             MessageBox.Show("Publicación terminada", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+            Publicacion_Controlador.I.Publicar(modelo);
         }
 
-        private async Task PublishWebApp(string projectPath, string publishPath)
+        private async Task PublishWebApp(string projectPath, string publishPath, Publicacion_Modelo modelo)
         {
             AppendToConsole("Publicando aplicación web...");
             var processInfo = new ProcessStartInfo("dotnet", $"publish \"{projectPath}\" -c Release -o \"{publishPath}\"")
@@ -172,7 +177,7 @@ namespace SAM_BMT.Vista.Pages
             txtProgress.Text = "60% - Publicación web completada";
         }
 
-        private async Task PublishDesktopApp(string solutionPath, string publishPath)
+        private async Task PublishDesktopApp(string solutionPath, string publishPath, Publicacion_Modelo modelo)
         {
             AppendToConsole("Publicando aplicación de escritorio...");
 
@@ -210,6 +215,14 @@ namespace SAM_BMT.Vista.Pages
             if (process.ExitCode == 0)
             {
                 AppendToConsole("Publicación de escritorio completada.");
+
+                // Determinar el nombre de la aplicación publicada
+                string appName = Path.GetFileNameWithoutExtension(projectFile) + ".application";
+                string destinationPath = $@"\\"+txt_ip_server.Text+@"\Apps\Desktop\{appName}";
+                modelo.name_app = appName;
+                modelo.ruta_origen = destinationPath;
+                modelo.servidor = txt_ip_server.Text;
+                CopyFilesToServer(publishPath, destinationPath); // Ajusta la ruta de destino según sea necesario
             }
             else
             {
@@ -220,7 +233,45 @@ namespace SAM_BMT.Vista.Pages
             progressBar.Value = 60;
             txtProgress.Text = "60% - Publicación de escritorio completada";
         }
+        private async Task ReadProcessOutputAsync(Process process)
+        {
+            var tcs = new TaskCompletionSource<bool>();
 
+            process.Exited += (sender, args) => tcs.SetResult(true);
+            process.EnableRaisingEvents = true;
+
+            while (!process.StandardOutput.EndOfStream)
+            {
+                string line = await process.StandardOutput.ReadLineAsync();
+                AppendToConsole(line);
+            }
+
+            await tcs.Task;
+        }
+        private void CopyFilesToServer(string sourcePath, string destinationPath)
+        {
+            try
+            {
+                // Create all directories in destination path if they do not exist
+                foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                {
+                    Directory.CreateDirectory(dirPath.Replace(sourcePath, destinationPath));
+                }
+
+                // Copy all the files & replace any files with the same name
+                foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+                {
+                    File.Copy(newPath, newPath.Replace(sourcePath, destinationPath), true);
+                }
+
+                AppendToConsole("Archivos copiados al servidor correctamente.");
+            }
+            catch (Exception ex)
+            {
+                AppendToConsole($"Error al copiar archivos al servidor: {ex.Message}");
+                MessageBox.Show($"Error al copiar archivos al servidor: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private string FindMSBuildPath()
         {
             var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
@@ -261,21 +312,6 @@ namespace SAM_BMT.Vista.Pages
             return null;
         }
 
-        private async Task ReadProcessOutputAsync(Process process)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-
-            process.Exited += (sender, args) => tcs.SetResult(true);
-            process.EnableRaisingEvents = true;
-
-            while (!process.StandardOutput.EndOfStream)
-            {
-                string line = await process.StandardOutput.ReadLineAsync();
-                AppendToConsole(line);
-            }
-
-            await tcs.Task;
-        }
 
         private void AppendToConsole(string message)
         {
@@ -288,6 +324,7 @@ namespace SAM_BMT.Vista.Pages
 
         private void ExecuteSqlScripts()
         {
+            
             foreach (var scriptFile in ScriptFiles)
             {
                 string scriptContent = File.ReadAllText(scriptFile.FilePath);
@@ -307,7 +344,15 @@ namespace SAM_BMT.Vista.Pages
                 AppendToConsole($"Ejecutando script: {scriptFile.FileName}");
             }
         }
-                 
+
+        private void btn_ExecuteSQL_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Este dispositivo aún no tiene permisos para ejecutar scripts.\nSolo cuentas con permisos de visualizar.",
+                "Solicita permisos con el administrador", MessageBoxButton.OK, MessageBoxImage.Error);
+            //progressBar.Value = 80;
+            //txtProgress.Text = "80% - Ejecutando scripts SQL";
+            //ExecuteSqlScripts();
+        }
     }
 
     public class ScriptFile
